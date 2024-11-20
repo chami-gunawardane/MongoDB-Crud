@@ -6,6 +6,8 @@ import mongoose from 'mongoose';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors();
+
   // Add MongoDB connection event listeners
   mongoose.connect('mongodb+srv://chamigunawardane:Mongo123@studentmanagement.15y4a.mongodb.net/studentmanagement?retryWrites=true&w=majority')
   .then(() => {
