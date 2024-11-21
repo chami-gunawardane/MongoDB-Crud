@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import Button from "../../component/Button";
 import studentService from "../../service/studentService";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";  
+import "react-toastify/dist/ReactToastify.css";
 
-const StudentTable = () => {
+const StudentTable = ({ onEdit }) => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,7 +13,7 @@ const StudentTable = () => {
     const fetchStudents = async () => {
       try {
         const response = await studentService.getStudents();
-        console.log("API Response:", response); 
+        console.log("API Response:", response);
         if (response && Array.isArray(response)) {
           setStudents(response);
         } else {
@@ -36,11 +36,13 @@ const StudentTable = () => {
       setStudents((prevStudents) =>
         prevStudents.filter((student) => student._id !== id)
       );
-      toast.success("Student record deleted successfully!");  // Success toast
+      toast.success("Student record deleted successfully!", {
+        position: "top-center",
+      }); // Success toast
     } catch (err) {
       console.error("Error deleting student:", err);
       setError("Failed to delete student.");
-      toast.error("Failed to delete student.");  // Error toast
+      toast.error("Failed to delete student.", { position: "top-center" }); // Error toast
     }
   };
 
@@ -96,7 +98,9 @@ const StudentTable = () => {
                       <Button
                         text="Edit"
                         customClass="px-0.5 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
+                        onClick={() => onEdit(student)} // Pass the whole student object
                       />
+
                       <Button
                         text="Delete"
                         customClass="px-0.5 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
