@@ -15,15 +15,17 @@ const StudentForm = ({ editingStudent, onEditComplete }) => {
 
   useEffect(() => {
     if (editingStudent) {
+      const formattedDob = new Date(editingStudent.dob).toISOString().split('T')[0];
       setFormData({
         firstName: editingStudent.firstName || "",
         lastName: editingStudent.lastName || "",
         contactNo: editingStudent.contactNo || "",
-        dob: editingStudent.dob || "",
-        image: null, // You can handle editing the image separately
+        dob: formattedDob || "",
+        image: null,
       });
     }
   }, [editingStudent]);
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
