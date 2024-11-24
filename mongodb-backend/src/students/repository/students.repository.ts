@@ -13,7 +13,6 @@ export class StudentsRepository {
     return newStudent.save();
   }
   
-
   async findAll(): Promise<Students[]> {
     return this.studentModel.find().exec();
   }

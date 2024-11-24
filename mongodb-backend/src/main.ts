@@ -8,7 +8,6 @@ async function bootstrap() {
 
   app.enableCors();
 
-  // Add MongoDB connection event listeners
   mongoose.connect('mongodb+srv://chamigunawardane:Mongo123@studentmanagement.15y4a.mongodb.net/studentmanagement?retryWrites=true&w=majority')
   .then(() => {
     Logger.log('MongoDB connected successfully!', 'DatabaseConnection');

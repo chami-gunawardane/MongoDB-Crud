@@ -1,14 +1,27 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { StudentsService } from '../service/students.service';
 import { Students } from '../entity/students.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { v4 as uuid } from 'uuid';
 
 @Controller('students')
 export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
 
   @Post()
-  async createStudent(@Body() data: Partial<Students>): Promise<Students> {
-    return this.studentsService.createStudent(data);
+  @UseInterceptors(FileInterceptor('image'))
+  async createStudent(
+    @Body() data: Partial<Students>, 
+    @UploadedFile() file: Express.Multer.File
+  ): Promise<Students> {
+    let imageUrl = null;
+    if (file) {
+      const fileName = uuid();
+      const uploadedFile = await this.studentsService.s3_upload(file.buffer, this.studentsService.AWS_S3_BUCKET, `${fileName}_student`, file.mimetype);
+      imageUrl = uploadedFile.Location; 
+    }
+
+    return this.studentsService.createStudent({ ...data, image: imageUrl });
   }
 
   @Get()
@@ -22,11 +35,21 @@ export class StudentsController {
   }
 
   @Put(':id')
+  @UseInterceptors(FileInterceptor('image'))
   async updateStudent(
     @Param('id') id: string,
     @Body() updateData: Partial<Students>,
+    @UploadedFile() file: Express.Multer.File
   ): Promise<Students> {
-    return this.studentsService.updateStudent(id, updateData);
+    let imageUrl = updateData.image;
+
+    if (file) {
+      const fileName = uuid();
+      const uploadedFile = await this.studentsService.s3_upload(file.buffer, this.studentsService.AWS_S3_BUCKET, `${fileName}_student`, file.mimetype);
+      imageUrl = uploadedFile.Location;
+    }
+
+    return this.studentsService.updateStudent(id, { ...updateData, image: imageUrl });
   }
 
   @Delete(':id')

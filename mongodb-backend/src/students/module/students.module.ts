@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { StudentsController } from '../controller/students.controller';
 import { StudentsService } from '../service/students.service';
-import { StudentsRepository } from '../repository/students.repository';  // Add this import
+import { StudentsRepository } from '../repository/students.repository';  
 import { Students, StudentsSchema } from '../entity/students.entity';
 
 @Module({
@@ -10,6 +10,6 @@ import { Students, StudentsSchema } from '../entity/students.entity';
     MongooseModule.forFeature([{ name: Students.name, schema: StudentsSchema }]),
   ],
   controllers: [StudentsController],
-  providers: [StudentsService, StudentsRepository],  // Add StudentsRepository here
+  providers: [StudentsService, StudentsRepository],  
 })
 export class StudentsModule {}
